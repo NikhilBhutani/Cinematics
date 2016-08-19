@@ -2,15 +2,17 @@ package com.github.nikhilbhutani.popularmovies2.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.SyncStateContract;
 
 
+import com.github.nikhilbhutani.popularmovies2.Utils.Constants;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Nikhil Bhutani on 8/16/2016.
  */
-public class Movie implements Parcelable{
+public class Movie implements Parcelable {
 
     @SerializedName("poster_path")
     @Expose
@@ -73,8 +75,8 @@ public class Movie implements Parcelable{
     }
 
     public String getPosterPath() {
-  //      return SyncStateContract.Constants.BASE_URL_IMAGE_POSTER + posterPath;
-        return posterPath;
+              return Constants.BASE_URL_IMAGE_POSTER + posterPath;
+      //  return posterPath;
     }
 
     public boolean isAdult() {
