@@ -3,4 +3,8 @@
 
     <string name="exit">Press again to exit!</string>
 
+    <string name="action_popular">Popular</string>
+    <string name="action_topRated">Top Rated</string>
+
+
 </resources>
