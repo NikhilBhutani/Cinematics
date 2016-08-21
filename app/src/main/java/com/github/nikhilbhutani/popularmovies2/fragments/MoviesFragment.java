@@ -27,6 +27,8 @@ import com.github.nikhilbhutani.popularmovies2.network.ApiInterface;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,12 +41,16 @@ public class MoviesFragment extends Fragment {
     private MovieRecyclerViewAdapter recyclerViewAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ApiInterface apiInterface;
-    RecyclerView recyclerView;
     List<Movie> movieList;
-    Toolbar toolbar;
     Call<MovieList> movieCall;
     View view;
     ProgressDialog progressDialog;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.recyclerview)
+    RecyclerView recyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,8 +65,8 @@ public class MoviesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_main, container, false);
+        ButterKnife.bind(this, view);
 
-        toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         toolbar.setTitle("Popular Movies");
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.inflateMenu(R.menu.main);
@@ -75,14 +81,14 @@ public class MoviesFragment extends Fragment {
                 if (id == R.id.action_popular) {
 
                     progressDialog.show();
-                    movieCall = apiInterface.getPopularMovies("Enter API Key");
+                    movieCall = apiInterface.getPopularMovies("Enter Api key");
                     asyncCallForMovies();
                     toolbar.setTitle("Popular Movies");
 
                 } else if (id == R.id.action_topRated) {
 
                     progressDialog.show();
-                    movieCall = apiInterface.getTopRatedMovies("Enter API Key");
+                    movieCall = apiInterface.getTopRatedMovies("Enter Api key");
                     asyncCallForMovies();
                     toolbar.setTitle("Top Rated Movies");
                 }
@@ -101,7 +107,7 @@ public class MoviesFragment extends Fragment {
 
 
         apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+     //   recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true);
@@ -115,7 +121,7 @@ public class MoviesFragment extends Fragment {
         recyclerView.setLayoutManager(mLayoutManager);
 
         //To ensure that movie call is Asynchronous
-        movieCall = apiInterface.getPopularMovies("Enter API Key");
+        movieCall = apiInterface.getPopularMovies("Enter Api key");
 
         if (savedInstanceState == null || !savedInstanceState.containsKey("Movies")) {
             progressDialog.show();
@@ -136,8 +142,10 @@ public class MoviesFragment extends Fragment {
             public void onResponse(Call<MovieList> call, Response<MovieList> response) {
 
                 MovieList allMovieResponse = response.body();
-                movieList = allMovieResponse.getResults();
 
+                if(allMovieResponse!=null) {
+                    movieList = allMovieResponse.getResults();
+                }
                 progressDialog.dismiss();
                 recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), movieList);
                 recyclerView.setAdapter(recyclerViewAdapter);

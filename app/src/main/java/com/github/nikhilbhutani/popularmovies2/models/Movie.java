@@ -75,8 +75,8 @@ public class Movie implements Parcelable {
     }
 
     public String getPosterPath() {
-              return Constants.BASE_URL_IMAGE_POSTER + posterPath;
-      //  return posterPath;
+        return Constants.BASE_URL_IMAGE_POSTER + posterPath;
+        //  return posterPath;
     }
 
     public boolean isAdult() {
@@ -108,7 +108,8 @@ public class Movie implements Parcelable {
     }
 
     public String getBackdropPath() {
-        return backdropPath;
+
+        return Constants.BASE_URL_IMAGE_BACKDROP + backdropPath;
     }
 
     public double getPopularity() {
