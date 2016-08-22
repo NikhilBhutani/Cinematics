@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
@@ -12,8 +11,8 @@
         android:id="@+id/appbarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
+
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
@@ -158,7 +157,7 @@
         app:backgroundTint="@color/cardview_light_background"
         app:elevation="6dp"
         app:fabSize="mini"
-        app:layout_anchor="@id/app_bar_layout"
+        app:layout_anchor="@id/appbarLayout"
         app:layout_anchorGravity="bottom|right|end" />
 
     <android.support.design.widget.FloatingActionButton
@@ -167,10 +166,10 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/margin_81dp"
         android:src="@android:drawable/ic_media_play"
-        app:backgroundTint="@android:color/holo_red_dark"
+        app:backgroundTint="@color/colorPrimaryDark"
         app:elevation="6dp"
         app:fabSize="mini"
-        app:layout_anchor="@id/app_bar_layout"
+        app:layout_anchor="@id/appbarLayout"
         app:layout_anchorGravity="bottom|right|end" />
 
     <android.support.design.widget.FloatingActionButton
@@ -179,10 +178,10 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/margin_large"
         android:src="@android:drawable/ic_menu_share"
-        app:backgroundTint="@android:color/holo_red_dark"
+        app:backgroundTint="@color/colorPrimaryDark"
         app:elevation="6dp"
         app:fabSize="mini"
-        app:layout_anchor="@id/app_bar_layout"
+        app:layout_anchor="@id/appbarLayout"
         app:layout_anchorGravity="bottom|right|end" />
 
 

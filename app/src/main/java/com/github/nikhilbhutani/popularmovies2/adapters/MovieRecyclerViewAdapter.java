@@ -52,9 +52,9 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
         holder.setClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int Position) {
-                Movie moviesDetais = mList.get(position);
+                Movie movie = mList.get(position);
                 Intent intent = new Intent(mcontext, MovieDetailActivity.class);
-    //            intent.putExtra(MainActivityFragment.DETAILS, moviesDetais);
+               intent.putExtra("MovieDetails", movie);
                 mcontext.startActivity(intent);
 
 

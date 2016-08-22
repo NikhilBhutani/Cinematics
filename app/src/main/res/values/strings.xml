@@ -5,9 +5,12 @@
 
     <string name="action_popular">Popular</string>
     <string name="action_topRated">Top Rated</string>
+    <string name="action_favorites">Favorites</string>
 
     <string name="movie_title">Movie Title</string>
 
     <string name="movie_releaseDate">Apr 29,2016</string>
     <string name="movieSummary">Here, comes the movie overview</string>
+    <string name="trailers_dialog_title">Choose Trailer</string>
+
 </resources>

@@ -7,4 +7,6 @@
     <color name="colorDarkGrey">#666666</color>
 
     <color name="colorLightGrey">#a9a9a9</color>
+    <color name="dim_grey">#bebebe</color>
+    <color name="text_normal_black">#212121</color>
 </resources>
