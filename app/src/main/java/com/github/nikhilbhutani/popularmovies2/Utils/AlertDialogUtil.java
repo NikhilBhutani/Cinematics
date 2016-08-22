@@ -1,6 +1,6 @@
 package com.github.nikhilbhutani.popularmovies2.Utils;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.TextUtils;

@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.github.nikhilbhutani.popularmovies2.BuildConfig;
 import com.github.nikhilbhutani.popularmovies2.R;
 import com.github.nikhilbhutani.popularmovies2.Utils.AlertDialogUtil;
 import com.github.nikhilbhutani.popularmovies2.Utils.Constants;
@@ -126,13 +127,13 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
         movieTitle.setText(movie.getTitle());
         movieSummary.setText(movie.getOverview());
         releaseDate.setText(movie.getReleaseDate());
-//        movieRating.setText((int) movie.getVoteAverage());
+         movieRating.setText((String.valueOf( movie.getVoteAverage())));
         Glide.with(getActivity()).load(movie.getPosterPath()).error(R.drawable.place_holder).into(moviePoster);
         Glide.with(getActivity()).load(movie.getBackdropPath()).error(R.drawable.place_holder).into(backDropImage);
 
         apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
 
-        reviewListCall = apiInterface.getReview(movie.getId(), "Enter the api Key");
+        reviewListCall = apiInterface.getReview(movie.getId(), BuildConfig.API_KEY);
 
         reviewListCall.enqueue(new Callback<MovieReviewList>() {
             @Override
@@ -193,7 +194,7 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
         switch (view.getId()) {
 
             case R.id.fab_trailer: {
-                videosListCall = apiInterface.getTrailer(movie.getId(), "Enter the Api key");
+                videosListCall = apiInterface.getTrailer(movie.getId(), BuildConfig.API_KEY);
 
                 videosListCall.enqueue(new Callback<MovieVideosList>() {
                     @Override
@@ -226,7 +227,7 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
 
                     }
                 });
-
+                break;
             }
 
 
@@ -234,7 +235,7 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
 
             {
 
-                videosListCall = apiInterface.getTrailer(movie.getId(), "Enter the Api key");
+                videosListCall = apiInterface.getTrailer(movie.getId(), BuildConfig.API_KEY);
 
                 videosListCall.enqueue(new Callback<MovieVideosList>() {
                     @Override
@@ -259,6 +260,8 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
 
                     }
                 });
+
+                break;
             }
 
         }

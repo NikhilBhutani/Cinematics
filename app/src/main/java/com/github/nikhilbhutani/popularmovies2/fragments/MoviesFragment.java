@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.nikhilbhutani.popularmovies2.BuildConfig;
 import com.github.nikhilbhutani.popularmovies2.R;
 import com.github.nikhilbhutani.popularmovies2.adapters.MovieRecyclerViewAdapter;
 import com.github.nikhilbhutani.popularmovies2.models.MovieList;
@@ -82,14 +83,14 @@ public class MoviesFragment extends Fragment {
                 if (id == R.id.action_popular) {
 
                     progressDialog.show();
-                    movieCall = apiInterface.getPopularMovies("Enter the Api key");
+                    movieCall = apiInterface.getPopularMovies(BuildConfig.API_KEY);
                     asyncCallForMovies();
                     toolbar.setTitle("Popular Movies");
 
                 } else if (id == R.id.action_topRated) {
 
                     progressDialog.show();
-                    movieCall = apiInterface.getTopRatedMovies("Enter the Api key");
+                    movieCall = apiInterface.getTopRatedMovies(BuildConfig.API_KEY);
                     asyncCallForMovies();
                     toolbar.setTitle("Top Rated Movies");
                 }
@@ -122,7 +123,7 @@ public class MoviesFragment extends Fragment {
         recyclerView.setLayoutManager(mLayoutManager);
 
         //To ensure that movie call is Asynchronous
-        movieCall = apiInterface.getPopularMovies("Enter the Api key");
+        movieCall = apiInterface.getPopularMovies(BuildConfig.API_KEY);
 
         if (savedInstanceState == null || !savedInstanceState.containsKey("Movies")) {
             progressDialog.show();
