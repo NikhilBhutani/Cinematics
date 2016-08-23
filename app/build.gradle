@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+apply plugin: 'com.neenbedankt.android-apt'
+
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
@@ -19,7 +21,7 @@ android {
     }
 
     buildTypes.each{
-        it.buildConfigField 'String', 'API_KEY',"\"Enter your API KEY here\""
+        it.buildConfigField 'String', 'API_KEY',"\"ENTER API KEY HERE\""
     }
 
 }
@@ -30,12 +32,24 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.0.1'
     compile 'com.android.support:support-v4:24.1.1'
     compile 'com.android.support:design:24.1.1'
+
+    //Glide
     compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    //View Injection Lib - Butterknife
     compile 'com.jakewharton:butterknife:8.1.0'
     apt 'com.jakewharton:butterknife-compiler:8.1.0'
+
     compile 'com.android.support:cardview-v7:24.1.1'
     compile 'com.android.support:recyclerview-v7:24.1.1'
+
+    //Retrofit2
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+    //SimpleSQLprovider
+    compile 'com.squareup:javapoet:1.2.0'
+    compile 'ckm.simple:simple_sql_provider_annotation:1.0.6'
+    compile 'ckm.simple:simple_sql_provider_processor:1.0.6'
 
 }

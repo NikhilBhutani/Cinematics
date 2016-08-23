@@ -18,6 +18,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.MovieDetailActivity"/>
+
+        <provider
+            android:authorities="com.github.nikhilbhutani.popularmovies2"
+            android:name="com.github.nikhilbhutani.popularmovies2.data.MovieProvider"/>
     </application>
 
 </manifest>

@@ -12,5 +12,8 @@
     <string name="movie_releaseDate">Apr 29,2016</string>
     <string name="movieSummary">Here, comes the movie overview</string>
     <string name="trailers_dialog_title">Choose Trailer</string>
+    <string name="add_fav">Added To Favorites</string>
+    <string name="rem_fav">Removed From Favorites</string>
+
 
 </resources>

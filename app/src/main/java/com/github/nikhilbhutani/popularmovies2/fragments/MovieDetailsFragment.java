@@ -1,12 +1,15 @@
 package com.github.nikhilbhutani.popularmovies2.fragments;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +31,7 @@ import com.github.nikhilbhutani.popularmovies2.models.MovieReview;
 import com.github.nikhilbhutani.popularmovies2.models.MovieReviewList;
 import com.github.nikhilbhutani.popularmovies2.models.MovieVideo;
 import com.github.nikhilbhutani.popularmovies2.models.MovieVideosList;
+import com.github.nikhilbhutani.popularmovies2.models.MoviesTableTable;
 import com.github.nikhilbhutani.popularmovies2.network.ApiClient;
 import com.github.nikhilbhutani.popularmovies2.network.ApiInterface;
 
@@ -52,6 +56,8 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
     ApiInterface apiInterface;
     Call<MovieReviewList> reviewListCall;
     Call<MovieVideosList> videosListCall;
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor editor;
     private int mViewId;
     @BindView(R.id.collapsingToolbar)
     CollapsingToolbarLayout collapsingToolbar;
@@ -103,6 +109,8 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
         if (intent != null && intent.hasExtra("MovieDetails")) {
             movie = intent.getParcelableExtra("MovieDetails");
         }
+        sharedpreferences = getActivity().getSharedPreferences("mypref", Context.MODE_PRIVATE);
+        editor = sharedpreferences.edit();
 
     }
 
@@ -193,6 +201,31 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
 
         switch (view.getId()) {
 
+
+            case R.id.fab_favorite:
+
+
+                if (!sharedpreferences.contains(String.valueOf(movie.getId()))) {
+                    Snackbar.make(view, getResources().getText(R.string.add_fav), Snackbar.LENGTH_LONG).show();
+                    editor.putInt(String.valueOf(movie.getId()), movie.getId());
+                    editor.apply();
+                    getActivity().getContentResolver().insert(MoviesTableTable.CONTENT_URI, MoviesTableTable.getContentValues(movie, false));
+                    getActivity().getContentResolver().notifyChange(MoviesTableTable.CONTENT_URI, null);
+       //             f.setImageResource(R.drawable.ic_favorite_white_24dp);
+                } else {
+                    Snackbar.make(view, getResources().getText(R.string.rem_fav), Snackbar.LENGTH_LONG).show();
+                    int result = getActivity().getContentResolver().delete(MoviesTableTable.CONTENT_URI, MoviesTableTable.FIELD_COL_ID + "=?",
+                            new String[]{String.valueOf(movie.getId())});
+                    Log.e("Result", String.valueOf(movie.getId()));
+                    editor.remove(String.valueOf(movie.getId()));
+                    editor.apply();
+         //           f.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+                }
+
+                break;
+
+
+
             case R.id.fab_trailer: {
                 videosListCall = apiInterface.getTrailer(movie.getId(), BuildConfig.API_KEY);
 
@@ -229,6 +262,8 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
                 });
                 break;
             }
+
+
 
 
             case R.id.fab_share:

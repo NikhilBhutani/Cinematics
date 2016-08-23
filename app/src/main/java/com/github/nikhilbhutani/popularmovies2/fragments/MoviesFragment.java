@@ -22,6 +22,7 @@ import com.github.nikhilbhutani.popularmovies2.adapters.MovieRecyclerViewAdapter
 import com.github.nikhilbhutani.popularmovies2.models.MovieList;
 import com.github.nikhilbhutani.popularmovies2.models.Movie;
 import com.github.nikhilbhutani.popularmovies2.models.MovieReview;
+import com.github.nikhilbhutani.popularmovies2.models.MoviesTableTable;
 import com.github.nikhilbhutani.popularmovies2.network.ApiClient;
 import com.github.nikhilbhutani.popularmovies2.network.ApiInterface;
 
@@ -93,6 +94,14 @@ public class MoviesFragment extends Fragment {
                     movieCall = apiInterface.getTopRatedMovies(BuildConfig.API_KEY);
                     asyncCallForMovies();
                     toolbar.setTitle("Top Rated Movies");
+
+                }else if(id == R.id.action_favorites)
+                {
+                    movieList = MoviesTableTable.getRows(getActivity().getContentResolver().query(MoviesTableTable.CONTENT_URI,
+                            null, null, null, null), true);
+                    recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), movieList);
+                    recyclerView.setAdapter(recyclerViewAdapter);
+                    toolbar.setTitle("Favorite Movies");
                 }
                 return true;
             }
