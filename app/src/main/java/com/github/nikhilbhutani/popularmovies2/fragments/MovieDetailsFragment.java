@@ -112,6 +112,9 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
         sharedpreferences = getActivity().getSharedPreferences("mypref", Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
 
+
+
+
     }
 
     @Nullable
@@ -124,6 +127,12 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
         mButtonFavorite.setOnClickListener(this);
         mButtonTrailer.setOnClickListener(this);
         mButtonShare.setOnClickListener(this);
+
+        if (sharedpreferences.contains(String.valueOf(movie.getId()))) {
+            mButtonFavorite.setImageResource(R.mipmap.heart);
+        } else
+            mButtonFavorite.setImageResource(R.mipmap.heart_empty);
+
         return view;
 
     }
@@ -211,7 +220,7 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
                     editor.apply();
                     getActivity().getContentResolver().insert(MoviesTableTable.CONTENT_URI, MoviesTableTable.getContentValues(movie, false));
                     getActivity().getContentResolver().notifyChange(MoviesTableTable.CONTENT_URI, null);
-       //             f.setImageResource(R.drawable.ic_favorite_white_24dp);
+                     mButtonFavorite.setImageResource(R.mipmap.heart);
                 } else {
                     Snackbar.make(view, getResources().getText(R.string.rem_fav), Snackbar.LENGTH_LONG).show();
                     int result = getActivity().getContentResolver().delete(MoviesTableTable.CONTENT_URI, MoviesTableTable.FIELD_COL_ID + "=?",
@@ -219,7 +228,7 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
                     Log.e("Result", String.valueOf(movie.getId()));
                     editor.remove(String.valueOf(movie.getId()));
                     editor.apply();
-         //           f.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+                    mButtonFavorite.setImageResource(R.mipmap.heart_empty);
                 }
 
                 break;
