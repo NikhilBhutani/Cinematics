@@ -1,11 +1,15 @@
 package com.github.nikhilbhutani.popularmovies2.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,19 +45,22 @@ import retrofit2.Response;
  */
 public class MoviesFragment extends Fragment {
 
-    private MovieRecyclerViewAdapter recyclerViewAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private ApiInterface apiInterface;
-    List<Movie> movieList;
-    Call<MovieList> movieCall;
-    View view;
-    ProgressDialog progressDialog;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @BindView(R.id.recyclerview)
     RecyclerView recyclerView;
+
+    private MovieRecyclerViewAdapter recyclerViewAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private ApiInterface apiInterface;
+    List<Movie> movieList;
+    Call<MovieList> movieCall;
+    View view;
+    NetworkInfo networkInfo;
+    ProgressDialog progressDialog;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,8 +102,7 @@ public class MoviesFragment extends Fragment {
                     asyncCallForMovies();
                     toolbar.setTitle("Top Rated Movies");
 
-                }else if(id == R.id.action_favorites)
-                {
+                } else if (id == R.id.action_favorites) {
                     movieList = MoviesTableTable.getRows(getActivity().getContentResolver().query(MoviesTableTable.CONTENT_URI,
                             null, null, null, null), true);
                     recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), movieList);
@@ -118,7 +124,7 @@ public class MoviesFragment extends Fragment {
 
 
         apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-     //   recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+        //   recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true);
@@ -148,30 +154,39 @@ public class MoviesFragment extends Fragment {
     }
 
     private void asyncCallForMovies() {
-        movieCall.enqueue(new Callback<MovieList>() {
-            @Override
-            public void onResponse(Call<MovieList> call, Response<MovieList> response) {
 
-                MovieList allMovieResponse = response.body();
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (networkInfo == null) {
+            progressDialog.dismiss();
+            Snackbar.make(view, R.string.check_network, Snackbar.LENGTH_SHORT).show();
+        } else {
+            movieCall.enqueue(new Callback<MovieList>() {
+                @Override
+                public void onResponse(Call<MovieList> call, Response<MovieList> response) {
+
+                    MovieList allMovieResponse = response.body();
 
 
+                    if (allMovieResponse != null) {
+                        movieList = allMovieResponse.getResults();
+                    }
+                    progressDialog.dismiss();
+                    recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), movieList);
+                    recyclerView.setAdapter(recyclerViewAdapter);
 
-                if(allMovieResponse!=null) {
-                    movieList = allMovieResponse.getResults();
                 }
-                progressDialog.dismiss();
-                recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), movieList);
-                recyclerView.setAdapter(recyclerViewAdapter);
 
-            }
+                @Override
+                public void onFailure(Call<MovieList> call, Throwable t) {
 
-            @Override
-            public void onFailure(Call<MovieList> call, Throwable t) {
+                    Log.d("OnFailure", "Failed to get movies");
 
-                Log.d("OnFailure", "Failed to get movies");
-
-            }
-        });
+                }
+            });
+        }
     }
 
     @Override

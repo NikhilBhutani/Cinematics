@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -51,13 +53,6 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
 
     private static final String LOGTAG = MovieDetailActivity.class.getSimpleName();
 
-    View view;
-    Movie movie;
-    ApiInterface apiInterface;
-    Call<MovieReviewList> reviewListCall;
-    Call<MovieVideosList> videosListCall;
-    SharedPreferences sharedpreferences;
-    SharedPreferences.Editor editor;
     private int mViewId;
     @BindView(R.id.collapsingToolbar)
     CollapsingToolbarLayout collapsingToolbar;
@@ -100,6 +95,16 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
     @BindString(R.string.trailers_dialog_title)
     String trailerDialogTitle;
 
+    View view;
+    Movie movie;
+    ApiInterface apiInterface;
+    Call<MovieReviewList> reviewListCall;
+    Call<MovieVideosList> videosListCall;
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor editor;
+    ConnectivityManager connectivityManager;
+    NetworkInfo networkInfo;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,8 +116,6 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
         }
         sharedpreferences = getActivity().getSharedPreferences("mypref", Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
-
-
 
 
     }
@@ -144,13 +147,17 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
         movieTitle.setText(movie.getTitle());
         movieSummary.setText(movie.getOverview());
         releaseDate.setText(movie.getReleaseDate());
-         movieRating.setText((String.valueOf( movie.getVoteAverage())));
+        movieRating.setText((String.valueOf(movie.getVoteAverage())));
         Glide.with(getActivity()).load(movie.getPosterPath()).error(R.drawable.place_holder).into(moviePoster);
         Glide.with(getActivity()).load(movie.getBackdropPath()).error(R.drawable.place_holder).into(backDropImage);
 
         apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
 
         reviewListCall = apiInterface.getReview(movie.getId(), BuildConfig.API_KEY);
+
+        connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connectivityManager.getActiveNetworkInfo();
+
 
         reviewListCall.enqueue(new Callback<MovieReviewList>() {
             @Override
@@ -213,14 +220,14 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
 
             case R.id.fab_favorite:
 
-
+            {
                 if (!sharedpreferences.contains(String.valueOf(movie.getId()))) {
                     Snackbar.make(view, getResources().getText(R.string.add_fav), Snackbar.LENGTH_LONG).show();
                     editor.putInt(String.valueOf(movie.getId()), movie.getId());
                     editor.apply();
                     getActivity().getContentResolver().insert(MoviesTableTable.CONTENT_URI, MoviesTableTable.getContentValues(movie, false));
                     getActivity().getContentResolver().notifyChange(MoviesTableTable.CONTENT_URI, null);
-                     mButtonFavorite.setImageResource(R.mipmap.heart);
+                    mButtonFavorite.setImageResource(R.mipmap.heart);
                 } else {
                     Snackbar.make(view, getResources().getText(R.string.rem_fav), Snackbar.LENGTH_LONG).show();
                     int result = getActivity().getContentResolver().delete(MoviesTableTable.CONTENT_URI, MoviesTableTable.FIELD_COL_ID + "=?",
@@ -230,83 +237,89 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
                     editor.apply();
                     mButtonFavorite.setImageResource(R.mipmap.heart_empty);
                 }
-
-                break;
-
+            }
+            break;
 
 
             case R.id.fab_trailer: {
-                videosListCall = apiInterface.getTrailer(movie.getId(), BuildConfig.API_KEY);
+                networkInfo = connectivityManager.getActiveNetworkInfo();
 
-                videosListCall.enqueue(new Callback<MovieVideosList>() {
-                    @Override
-                    public void onResponse(Call<MovieVideosList> call, Response<MovieVideosList> response) {
+                if (networkInfo == null) {
+                    Snackbar.make(view, R.string.check_network, Snackbar.LENGTH_SHORT).show();
+                } else {
+
+                    videosListCall = apiInterface.getTrailer(movie.getId(), BuildConfig.API_KEY);
+                    videosListCall.enqueue(new Callback<MovieVideosList>() {
+                        @Override
+                        public void onResponse(Call<MovieVideosList> call, Response<MovieVideosList> response) {
 
 
-                        MovieVideosList movieVideo = response.body();
+                            MovieVideosList movieVideo = response.body();
 
-                        final List<MovieVideo> movieVideoList = movieVideo.getResults();
+                            final List<MovieVideo> movieVideoList = movieVideo.getResults();
 
-                        int noOfTrailers = movieVideoList.size();
-                        String[] trailerNames = new String[noOfTrailers];
-                        for (int i = 0; i < noOfTrailers; i++) {
-                            trailerNames[i] = movieVideoList.get(i).getName();
+                            int noOfTrailers = movieVideoList.size();
+                            String[] trailerNames = new String[noOfTrailers];
+                            for (int i = 0; i < noOfTrailers; i++) {
+                                trailerNames[i] = movieVideoList.get(i).getName();
+                            }
+
+                            AlertDialogUtil.createSingleChoiceItemsAlert(getActivity(), trailerDialogTitle,
+                                    trailerNames, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            playVideoTrailer(movieVideoList.get(which).getKey());
+                                            dialog.dismiss();
+                                        }
+                                    });
+
                         }
 
-                        AlertDialogUtil.createSingleChoiceItemsAlert(getActivity(), trailerDialogTitle,
-                                trailerNames, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        playVideoTrailer(movieVideoList.get(which).getKey());
-                                        dialog.dismiss();
-                                    }
-                                });
+                        @Override
+                        public void onFailure(Call<MovieVideosList> call, Throwable t) {
 
-                    }
-
-                    @Override
-                    public void onFailure(Call<MovieVideosList> call, Throwable t) {
-
-                    }
-                });
+                        }
+                    });
+                }
                 break;
             }
-
-
 
 
             case R.id.fab_share:
+                networkInfo = connectivityManager.getActiveNetworkInfo();
 
-            {
+                if (networkInfo == null) {
+                    Snackbar.make(view, R.string.check_network, Snackbar.LENGTH_SHORT).show();
+                } else {
 
-                videosListCall = apiInterface.getTrailer(movie.getId(), BuildConfig.API_KEY);
+                    videosListCall = apiInterface.getTrailer(movie.getId(), BuildConfig.API_KEY);
 
-                videosListCall.enqueue(new Callback<MovieVideosList>() {
-                    @Override
-                    public void onResponse(Call<MovieVideosList> call, Response<MovieVideosList> response) {
+                    videosListCall.enqueue(new Callback<MovieVideosList>() {
+                        @Override
+                        public void onResponse(Call<MovieVideosList> call, Response<MovieVideosList> response) {
 
 
-                        MovieVideosList movieVideo = response.body();
+                            MovieVideosList movieVideo = response.body();
 
-                        final List<MovieVideo> movieVideoList = movieVideo.getResults();
+                            final List<MovieVideo> movieVideoList = movieVideo.getResults();
 
-                        int noOfTrailers = movieVideoList.size();
-                        String[] trailerNames = new String[noOfTrailers];
-                        for (int i = 0; i < noOfTrailers; i++) {
-                            trailerNames[i] = movieVideoList.get(i).getName();
+                            int noOfTrailers = movieVideoList.size();
+                            String[] trailerNames = new String[noOfTrailers];
+                            for (int i = 0; i < noOfTrailers; i++) {
+                                trailerNames[i] = movieVideoList.get(i).getName();
+                            }
+
+                            shareVideoTrailer(movieVideoList.get(0).getKey());
                         }
 
-                        shareVideoTrailer(movieVideoList.get(0).getKey());
-                    }
+                        @Override
+                        public void onFailure(Call<MovieVideosList> call, Throwable t) {
 
-                    @Override
-                    public void onFailure(Call<MovieVideosList> call, Throwable t) {
-
-                    }
-                });
-
+                        }
+                    });
+                }
                 break;
-            }
+
 
         }
 

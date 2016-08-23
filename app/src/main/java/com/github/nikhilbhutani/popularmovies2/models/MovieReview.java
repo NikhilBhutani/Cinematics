@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by Nikhil Bhutani on 8/22/2016.
  */
-public class MovieReview implements Parcelable{
+public class MovieReview implements Parcelable {
 
     String id;
     String author;

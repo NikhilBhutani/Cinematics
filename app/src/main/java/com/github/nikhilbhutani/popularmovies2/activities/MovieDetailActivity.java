@@ -10,14 +10,14 @@ import com.github.nikhilbhutani.popularmovies2.fragments.MovieDetailsFragment;
 /**
  * Created by Nikhil Bhutani on 8/21/2016.
  */
-public class MovieDetailActivity extends AppCompatActivity{
+public class MovieDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.detail_container, new MovieDetailsFragment())

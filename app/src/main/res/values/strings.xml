@@ -15,5 +15,8 @@
     <string name="add_fav">Added To Favorites</string>
     <string name="rem_fav">Removed From Favorites</string>
 
+    <string name="check_network">Check Internet Connection! </string>
+
+
 
 </resources>

@@ -22,7 +22,6 @@ import ckm.simple.sql_provider.annotation.SimpleSQLConfig;
  */
 
 
-
 @SimpleSQLConfig(
         name = "MovieProvider",
         authority = "com.github.nikhilbhutani.popularmovies2",

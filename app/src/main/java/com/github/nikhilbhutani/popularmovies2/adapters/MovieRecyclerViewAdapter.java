@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Nikhil Bhutani on 8/19/2016.
  */
-public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecyclerViewAdapter.MyViewHolder>{
+public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecyclerViewAdapter.MyViewHolder> {
 
     List<Movie> mList;
     Context mcontext;
@@ -54,7 +54,7 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
             public void onClick(View view, int Position) {
                 Movie movie = mList.get(position);
                 Intent intent = new Intent(mcontext, MovieDetailActivity.class);
-               intent.putExtra("MovieDetails", movie);
+                intent.putExtra("MovieDetails", movie);
                 mcontext.startActivity(intent);
 
 
@@ -69,7 +69,7 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
     }
 
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.poster_image)
         ImageView imageView;
