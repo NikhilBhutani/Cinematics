@@ -33,7 +33,7 @@ ort-library/features.html)
 <img width="30%" src="screenshots/device_phone3.png" />
 
 <img width="30%" src="screenshots/device_phone4.png" />
-<img width="60%" src="screenshots/device_landscape.png" />
+<img width="65%" src="screenshots/device_landscape.png" />
 
 # License
 
