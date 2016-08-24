@@ -28,12 +28,12 @@ ort-library/features.html)
 
 ### Screenshots
 
-<img width="30%" src="screenshots/device_phone1.png" />
-<img width="30%" src="screenshots/device_phone2.png" />
-<img width="30%" src="screenshots/device_phone3.png" />
+<img width="32%" src="screenshots/device_phone1.png" />
+<img width="32%" src="screenshots/device_phone2.png" />
+<img width="32%" src="screenshots/device_phone3.png" />
 
 <img width="30%" src="screenshots/device_phone4.png" />
-<img width="65%" src="screenshots/device_landscape.png" />
+<img width="66%" src="screenshots/device_landscape.png" />
 
 # License
 
