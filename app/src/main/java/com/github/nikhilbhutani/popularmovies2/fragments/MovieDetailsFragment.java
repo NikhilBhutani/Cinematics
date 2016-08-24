@@ -104,6 +104,17 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
     SharedPreferences.Editor editor;
     ConnectivityManager connectivityManager;
     NetworkInfo networkInfo;
+    static boolean mTwoPane = false;
+
+
+    public static MovieDetailsFragment newInstance(Bundle args) {
+        MovieDetailsFragment movieDetailsFragment = new MovieDetailsFragment();
+        movieDetailsFragment.setArguments(args);
+        MovieDetailsFragment.mTwoPane = true;
+        return movieDetailsFragment;
+
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,7 +122,12 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
 
         Intent intent = getActivity().getIntent();
 
-        if (intent != null && intent.hasExtra("MovieDetails")) {
+        if (mTwoPane && getArguments() != null) {
+
+            Bundle arg = getArguments();
+            movie = arg.getParcelable("MovieDetails");
+
+        } else if (intent != null && intent.hasExtra("MovieDetails")) {
             movie = intent.getParcelableExtra("MovieDetails");
         }
         sharedpreferences = getActivity().getSharedPreferences("mypref", Context.MODE_PRIVATE);

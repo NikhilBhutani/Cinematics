@@ -2,6 +2,8 @@ package com.github.nikhilbhutani.popularmovies2.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +14,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.github.nikhilbhutani.popularmovies2.R;
 import com.github.nikhilbhutani.popularmovies2.Utils.ItemClickListener;
+import com.github.nikhilbhutani.popularmovies2.activities.MainActivity;
 import com.github.nikhilbhutani.popularmovies2.activities.MovieDetailActivity;
+import com.github.nikhilbhutani.popularmovies2.fragments.MovieDetailsFragment;
 import com.github.nikhilbhutani.popularmovies2.models.Movie;
 
 import java.util.List;
@@ -25,14 +29,16 @@ import butterknife.ButterKnife;
  */
 public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecyclerViewAdapter.MyViewHolder> {
 
-    List<Movie> mList;
-    Context mcontext;
-    View view;
+    private List<Movie> mList;
+    private Context mcontext;
+    private View view;
+    private boolean mTwoPane;
 
-    public MovieRecyclerViewAdapter(Context context, List<Movie> movieList) {
+    public MovieRecyclerViewAdapter(Context context, List<Movie> movieList, boolean mTwoPane) {
         this.mcontext = context;
         this.mList = movieList;
-        System.out.println(movieList);
+        this.mTwoPane = mTwoPane;
+       // System.out.println(movieList);
     }
 
 
@@ -52,14 +58,33 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
         holder.setClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int Position) {
-                Movie movie = mList.get(position);
-                Intent intent = new Intent(mcontext, MovieDetailActivity.class);
-                intent.putExtra("MovieDetails", movie);
-                mcontext.startActivity(intent);
 
+                Movie movie = mList.get(position);
+
+                if(mTwoPane){
+
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("MovieDetails",movie);
+                    detailsFragemntMultiPane(bundle);
+
+                }else {
+
+                    Intent intent = new Intent(mcontext, MovieDetailActivity.class);
+                    intent.putExtra("MovieDetails", movie);
+                    mcontext.startActivity(intent);
+                }
 
             }
         });
+
+    }
+
+    private void detailsFragemntMultiPane(Bundle bundle) {
+
+        MovieDetailsFragment movieDetailsFragment = MovieDetailsFragment.newInstance(bundle);
+        FragmentManager fragmentManager = ((MainActivity)mcontext).getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.detail_container, movieDetailsFragment)
+                .commit();
 
     }
 

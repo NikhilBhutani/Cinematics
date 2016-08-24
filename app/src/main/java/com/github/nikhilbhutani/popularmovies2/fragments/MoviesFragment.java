@@ -25,7 +25,6 @@ import com.github.nikhilbhutani.popularmovies2.R;
 import com.github.nikhilbhutani.popularmovies2.adapters.MovieRecyclerViewAdapter;
 import com.github.nikhilbhutani.popularmovies2.models.MovieList;
 import com.github.nikhilbhutani.popularmovies2.models.Movie;
-import com.github.nikhilbhutani.popularmovies2.models.MovieReview;
 import com.github.nikhilbhutani.popularmovies2.models.MoviesTableTable;
 import com.github.nikhilbhutani.popularmovies2.network.ApiClient;
 import com.github.nikhilbhutani.popularmovies2.network.ApiInterface;
@@ -60,7 +59,7 @@ public class MoviesFragment extends Fragment {
     View view;
     NetworkInfo networkInfo;
     ProgressDialog progressDialog;
-
+    private boolean mTwoPane = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,6 +80,9 @@ public class MoviesFragment extends Fragment {
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.inflateMenu(R.menu.main);
 
+        if (getActivity().findViewById(R.id.detail_container) != null) {
+            mTwoPane = true;
+        }
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -91,6 +93,8 @@ public class MoviesFragment extends Fragment {
                 if (id == R.id.action_popular) {
 
                     progressDialog.show();
+                    movieList.clear();
+                    recyclerViewAdapter.notifyDataSetChanged();
                     movieCall = apiInterface.getPopularMovies(BuildConfig.API_KEY);
                     asyncCallForMovies();
                     toolbar.setTitle("Popular Movies");
@@ -98,14 +102,18 @@ public class MoviesFragment extends Fragment {
                 } else if (id == R.id.action_topRated) {
 
                     progressDialog.show();
+                    movieList.clear();
+                    recyclerViewAdapter.notifyDataSetChanged();
                     movieCall = apiInterface.getTopRatedMovies(BuildConfig.API_KEY);
                     asyncCallForMovies();
                     toolbar.setTitle("Top Rated Movies");
 
                 } else if (id == R.id.action_favorites) {
+                    movieList.clear();
+                    recyclerViewAdapter.notifyDataSetChanged();
                     movieList = MoviesTableTable.getRows(getActivity().getContentResolver().query(MoviesTableTable.CONTENT_URI,
                             null, null, null, null), true);
-                    recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), movieList);
+                    recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), movieList, mTwoPane);
                     recyclerView.setAdapter(recyclerViewAdapter);
                     toolbar.setTitle("Favorite Movies");
                 }
@@ -146,7 +154,7 @@ public class MoviesFragment extends Fragment {
 
         } else {
             movieList = savedInstanceState.getParcelableArrayList("Movies");
-            recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), movieList);
+            recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), movieList, mTwoPane);
             recyclerViewAdapter.notifyDataSetChanged();
             recyclerView.setAdapter(recyclerViewAdapter);
         }
@@ -174,7 +182,7 @@ public class MoviesFragment extends Fragment {
                         movieList = allMovieResponse.getResults();
                     }
                     progressDialog.dismiss();
-                    recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), movieList);
+                    recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), movieList, mTwoPane);
                     recyclerView.setAdapter(recyclerViewAdapter);
 
                 }
