@@ -17,6 +17,10 @@
 
     <string name="check_network">Check Internet Connection! </string>
 
+    <string name="title_popular_movies">Popular Movies</string>
+    <string name="title_topRated_movies">Top Rated Movies</string>
+    <string name="title_favorite_movies">Favorite Movies</string>
 
+   <string name = "Movies">Movies</string>
 
 </resources>

@@ -76,7 +76,7 @@ public class MoviesFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
 
-        toolbar.setTitle("Popular Movies");
+        toolbar.setTitle(R.string.title_popular_movies);
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.inflateMenu(R.menu.main);
 
@@ -97,7 +97,7 @@ public class MoviesFragment extends Fragment {
                     recyclerViewAdapter.notifyDataSetChanged();
                     movieCall = apiInterface.getPopularMovies(BuildConfig.API_KEY);
                     asyncCallForMovies();
-                    toolbar.setTitle("Popular Movies");
+                    toolbar.setTitle(R.string.title_popular_movies);
 
                 } else if (id == R.id.action_topRated) {
 
@@ -106,7 +106,7 @@ public class MoviesFragment extends Fragment {
                     recyclerViewAdapter.notifyDataSetChanged();
                     movieCall = apiInterface.getTopRatedMovies(BuildConfig.API_KEY);
                     asyncCallForMovies();
-                    toolbar.setTitle("Top Rated Movies");
+                    toolbar.setTitle(R.string.title_topRated_movies);
 
                 } else if (id == R.id.action_favorites) {
                     movieList.clear();
@@ -115,7 +115,7 @@ public class MoviesFragment extends Fragment {
                             null, null, null, null), true);
                     recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), movieList, mTwoPane);
                     recyclerView.setAdapter(recyclerViewAdapter);
-                    toolbar.setTitle("Favorite Movies");
+                    toolbar.setTitle(R.string.title_favorite_movies);
                 }
                 return true;
             }
