@@ -1,6 +1,6 @@
 # Popular Movies - Stage2 
 
-An app help to discover movies, sorted by popular, highest rated and Favorite movies.
+An app that helps to discover movies, sorted by popular, highest rated and Favorite movies.
 This is the second project created as part of Android Developer Nanodegree provided by Udacity.
 
 ### Features
